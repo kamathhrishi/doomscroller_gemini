@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScrollScout - Multimodal Research Platform</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Main Platform View -->
+    <div class="platform-view active" id="platform-view">
+        <div class="platform-sidebar">
+            <div class="sidebar-header">
+                <div class="scrollscout-logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-brain"></i>
+                        <i class="fas fa-eye"></i>
+                        <i class="fas fa-microphone"></i>
+                    </div>
+                    <div class="logo-text">ScrollScout</div>
+                    <div class="logo-tagline">Multimodal Research</div>
+                </div>
+            </div>
+            <ul class="platform-sidebar-nav">
+                <li class="platform-nav-item active" data-section="chat">
+                    <i class="fas fa-comments"></i> Chat
+                </li>
+                <li class="platform-nav-item" data-section="account">
+                    <i class="fas fa-user"></i> Your Account
+                </li>
+                <li class="platform-nav-item" data-section="explore">
+                    <i class="fas fa-compass"></i> Explore
+                </li>
+                <li class="platform-nav-item" data-section="generate">
+                    <i class="fas fa-video"></i> Generate
+                </li>
+            </ul>
+        </div>
+
+        <div class="platform-main">
+            <div class="topbar">
+                <div class="topbar-title" id="platform-title">ScrollScout Platform</div>
+                <div class="topbar-actions">
+                    <label class="account-selector-label">
+                        <i class="fas fa-user"></i>
+                        <select id="account-selector" class="account-selector" onchange="switchAccount()">
+                            <option value="generic">Generic Account</option>
+                        </select>
+                    </label>
+                    <button class="btn btn-icon" onclick="showCreateAccountForm()" title="Add Account">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="content-area">
+                <!-- Chat Section -->
+                <div id="section-chat" class="section-content active">
+                    <div class="chat-container">
+                        <!-- Initial Search Bar State -->
+                        <div class="chat-search-state" id="chat-search-state">
+                            <div class="search-welcome">
+                                <div class="welcome-icon">
+                                    <i class="fas fa-brain"></i>
+                                </div>
+                                <h2 class="welcome-title">ScrollScout Assistant</h2>
+                                <p class="welcome-subtitle">Your intelligent research companion</p>
+                            </div>
+                            <div class="search-bar-container">
+                                <div class="search-input-wrapper">
+                                    <svg class="search-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                        <path fill="#9aa0a6" d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                                    </svg>
+                                    <input type="text" class="search-input" id="chat-input" 
+                                           placeholder="Ask me anything about your research...">
+                                    <button class="search-submit" onclick="sendChatMessage()">
+                                        <svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                            <path fill="#4285f4" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="search-suggestions">
+                                    <span class="suggestion-tag" onclick="setSuggestion('Analyze my Instagram data')">Analyze my Instagram data</span>
+                                    <span class="suggestion-tag" onclick="setSuggestion('Research trending topics')">Research trending topics</span>
+                                    <span class="suggestion-tag" onclick="setSuggestion('Generate content ideas')">Generate content ideas</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Conversation State (hidden initially) -->
+                        <div class="chat-conversation-state" id="chat-conversation-state" style="display: none;">
+                            <div class="conversation-header">
+                                <div class="conversation-title">
+                                    <div class="assistant-avatar">
+                                        <i class="fas fa-brain"></i>
+                                    </div>
+                                    <div class="assistant-info">
+                                        <span id="assistant-name">ScrollScout Assistant</span>
+                                        <span class="assistant-status">Online</span>
+                                    </div>
+                                </div>
+                                <button class="new-chat-btn" onclick="startNewChat()">
+                                    <i class="fas fa-plus"></i>
+                                    <span>New Chat</span>
+                                </button>
+                            </div>
+                            <div class="chat-messages" id="chat-messages">
+                                <!-- Messages will be added here -->
+                            </div>
+                            <div class="chat-input-container">
+                                <div class="chat-input-wrapper">
+                                    <input type="text" class="chat-input-field" id="chat-input-conversation" 
+                                           placeholder="Message AI Assistant...">
+                                    <button class="chat-send-btn" onclick="sendChatMessageFromConversation()">
+                                        <i class="fas fa-paper-plane"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Your Account Section -->
+                <div id="section-account" class="section-content">
+                    <div id="account-info" class="account-info">
+                        <!-- Account info will be populated here -->
+                    </div>
+                    
+                    <!-- Research Results Section -->
+                    <div id="research-results-section" class="research-results" style="display: none; margin-top: 30px;">
+                        <div id="research-results-container">
+                            <!-- Research results will be populated here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Explore Section -->
+                <div id="section-explore" class="section-content">
+                    <div class="content-header">
+                        <h2 class="content-title">🔍 Explore</h2>
+                        <p class="content-description">Discover trending content across all platforms</p>
+                    </div>
+                    
+                    <div id="explore-content">
+                        <!-- Content Type Toggle -->
+                        <div class="content-type-toggle">
+                            <div class="toggle-options">
+                                <div class="toggle-option active" data-type="generic" onclick="selectContentType('generic')">
+                                    <i class="fas fa-globe"></i> Generic Content
+                                </div>
+                                <div class="toggle-option" data-type="niche" onclick="selectContentType('niche')">
+                                    <i class="fas fa-target"></i> Your Niche
+                                </div>
+                            </div>
+                            <div class="content-type-info">
+                                <span id="content-type-description">Discover trending content across all platforms</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Platform Selection -->
+                        <div class="platform-selection">
+                            <label for="platform-select" class="platform-label">Platform:</label>
+                            <select id="platform-select" class="form-select" onchange="selectExploreChannel(this.value)">
+                                <option value="instagram">📱 Instagram</option>
+                                <option value="youtube">🎬 YouTube</option>
+                            </select>
+                        </div>
+                        
+                        <div class="explore-controls">
+                            <button class="btn btn-primary" onclick="exploreLiveTrends()">
+                                <i class="fas fa-search"></i> <span id="scrape-button-text">Explore Live Trends</span>
+                            </button>
+                            
+                            <button class="btn btn-secondary" onclick="openStyleModal()">
+                                <i class="fas fa-palette"></i> Your Style
+                            </button>
+                            
+                            <div class="filter-controls">
+                                <select id="explore-sort" class="form-select">
+                                    <option value="trending">Trending</option>
+                                    <option value="views">Most Views</option>
+                                    <option value="engagement">Most Engagement</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div id="explore-status" class="status-message hidden"></div>
+                        <div id="explore-results"></div>
+                    </div>
+                </div>
+
+                <!-- Generate Section -->
+                <div id="section-generate" class="section-content">
+                    <div class="content-header">
+                        <h2 class="content-title">🎬 Generate</h2>
+                        <p class="content-description">Create images and videos using AI</p>
+                    </div>
+                    
+                    <div id="generate-content">
+                        <!-- Media Type Selection -->
+                        <div class="media-type-selector">
+                            <div class="media-type-tabs">
+                                <div class="media-type-tab active" data-type="image" onclick="selectMediaType('image')">
+                                    <i class="fas fa-image"></i> Image
+                                </div>
+                                <div class="media-type-tab" data-type="video" onclick="selectMediaType('video')">
+                                    <i class="fas fa-video"></i> Video
+                                </div>
+                                <div class="media-type-tab" data-type="history" onclick="selectMediaType('history')">
+                                    <i class="fas fa-history"></i> History
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Image Generation Form -->
+                        <div id="image-form" class="generate-form active">
+                            <div class="form-group">
+                                <div class="prompt-header">
+                                    <label class="form-label">Image Description</label>
+                                    <button class="btn btn-sm btn-outline" onclick="openSuggestionsModal('image')">
+                                        <i class="fas fa-lightbulb"></i> Smart Suggestions
+                                    </button>
+                                </div>
+                                <textarea id="image-prompt" class="form-textarea" 
+                                          placeholder="Describe the image you want to generate..."
+                                          rows="3"></textarea>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Size</label>
+                                    <select id="image-size" class="form-select">
+                                        <option value="512x512">Square (512x512)</option>
+                                        <option value="768x768">Square HD (768x768)</option>
+                                        <option value="1024x1024" selected>HD Square (1024x1024)</option>
+                                        <option value="1024x768">Landscape (1024x768)</option>
+                                        <option value="768x1024">Portrait (768x1024)</option>
+                                        <option value="1920x1080">Full HD Landscape</option>
+                                        <option value="1080x1920">Full HD Portrait</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Style</label>
+                                    <select id="image-style" class="form-select">
+                                        <option value="realistic" selected>Realistic</option>
+                                        <option value="artistic">Artistic</option>
+                                        <option value="cartoon">Cartoon</option>
+                                        <option value="abstract">Abstract</option>
+                                        <option value="photographic">Photographic</option>
+                                        <option value="digital_art">Digital Art</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Quality</label>
+                                    <select id="image-quality" class="form-select">
+                                        <option value="medium">Medium</option>
+                                        <option value="high" selected>High</option>
+                                        <option value="ultra">Ultra</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <button class="btn btn-primary" onclick="generateImage()">
+                                <i class="fas fa-image"></i> Generate Image
+                            </button>
+                        </div>
+
+                        <!-- Video Generation Form -->
+                        <div id="video-form" class="generate-form">
+                            <div class="form-group">
+                                <div class="prompt-header">
+                                    <label class="form-label">Video Description</label>
+                                    <button class="btn btn-sm btn-outline" onclick="openSuggestionsModal('video')">
+                                        <i class="fas fa-lightbulb"></i> Smart Suggestions
+                                    </button>
+                                </div>
+                                <label class="form-label toggle-label">
+                                    <input type="checkbox" id="use-existing-image" onchange="toggleImageGallery()">
+                                    Use existing image
+                                </label>
+                            </div>
+
+                            <!-- Image Gallery (hidden by default) -->
+                            <div id="image-gallery" class="image-gallery" style="display: none;">
+                                <div id="gallery-grid" class="gallery-grid">
+                                    <div class="empty-state">
+                                        <i class="fas fa-images"></i>
+                                        <p>No images generated yet. Generate some images first!</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Video Description</label>
+                                <textarea id="video-prompt" class="form-textarea" 
+                                          placeholder="Describe the video or motion you want..."
+                                          rows="3"></textarea>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Duration (seconds)</label>
+                                    <select id="video-duration" class="form-select">
+                                        <option value="1">1 second</option>
+                                        <option value="3">3 seconds</option>
+                                        <option value="5" selected>5 seconds</option>
+                                        <option value="10">10 seconds</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Resolution</label>
+                                    <select id="video-resolution" class="form-select">
+                                        <option value="720p">720p</option>
+                                        <option value="1080p" selected>1080p</option>
+                                        <option value="4k">4K</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Style</label>
+                                    <select id="video-style" class="form-select">
+                                        <option value="realistic" selected>Realistic</option>
+                                        <option value="animated">Animated</option>
+                                        <option value="artistic">Artistic</option>
+                                        <option value="cinematic">Cinematic</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <button class="btn btn-primary" onclick="generateVideo()">
+                                <i class="fas fa-video"></i> Generate Video
+                            </button>
+                        </div>
+
+
+                        <!-- History View -->
+                        <div id="history-view" class="generate-form">
+                            <div class="history-filters">
+                                <button class="btn btn-secondary" onclick="filterHistory('all')">All</button>
+                                <button class="btn btn-secondary" onclick="filterHistory('images')">Images</button>
+                                <button class="btn btn-secondary" onclick="filterHistory('videos')">Videos</button>
+                            </div>
+                            <div id="history-content" class="history-grid">
+                                <div class="empty-state">
+                                    <i class="fas fa-history"></i>
+                                    <p>No generated content yet</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="generated-results" class="generated-section"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay hidden">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p>Processing...</p>
+        </div>
+    </div>
+
+    <!-- Post Detail Modal -->
+    <div id="post-modal" class="modal hidden">
+        <div class="modal-overlay" onclick="closePostModal()"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">Post Analysis</h2>
+                <button class="modal-close" onclick="closePostModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <!-- Post details will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Account Modal -->
+    <div id="create-account-modal" class="modal hidden">
+        <div class="modal-overlay" onclick="hideCreateAccountForm()"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Create New Account</h3>
+                <button class="btn-icon" onclick="hideCreateAccountForm()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Account Name</label>
+                    <input type="text" id="account-name" class="form-input" 
+                           placeholder="e.g., @productivitypro" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Niche/Category</label>
+                    <input type="text" id="account-niche" class="form-input" 
+                           placeholder="e.g., Productivity, Fitness, Travel..." />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description (Optional)</label>
+                    <textarea id="account-description" class="form-textarea" rows="3"
+                              placeholder="What content does this account focus on?"></textarea>
+                </div>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button class="btn btn-primary" onclick="createAccount()">
+                        <i class="fas fa-check"></i> Create Account
+                    </button>
+                    <button class="btn btn-secondary" onclick="hideCreateAccountForm()">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Smart Suggestions Modal -->
+    <div id="suggestions-modal" class="modal hidden">
+        <div class="modal-overlay" onclick="closeSuggestionsModal()"></div>
+        <div class="modal-content suggestions-modal-content">
+            <div class="modal-header">
+                <h3 id="suggestions-modal-title">Smart Suggestions</h3>
+                <button class="modal-close" onclick="closeSuggestionsModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="suggestions-modal-list" class="suggestions-modal-list">
+                    <!-- Suggestions will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Style Analysis Modal -->
+    <div id="style-modal" class="modal hidden">
+        <div class="modal-overlay" onclick="closeStyleModal()"></div>
+        <div class="modal-content style-modal-content">
+            <div class="modal-header">
+                <h3>Your Style - Analysis Prompts</h3>
+                <button class="modal-close" onclick="closeStyleModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="style-modal-tabs">
+                    <div class="style-tab active" data-platform="instagram" onclick="switchStyleTab('instagram')">
+                        <i class="fab fa-instagram"></i> Instagram
+                    </div>
+                    <div class="style-tab" data-platform="youtube" onclick="switchStyleTab('youtube')">
+                        <i class="fab fa-youtube"></i> YouTube
+                    </div>
+                </div>
+                
+                <div class="style-content">
+                    <div id="style-instagram-content" class="style-platform-content active">
+                        <div class="style-header">
+                            <h4>Instagram Analysis Prompt</h4>
+                            <button class="btn btn-sm btn-outline" onclick="editStylePrompt('instagram')">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                        </div>
+                        <div class="style-prompt-display" id="instagram-prompt-display">
+                            <!-- Instagram prompt will be loaded here -->
+                        </div>
+                    </div>
+                    
+                    <div id="style-youtube-content" class="style-platform-content">
+                        <div class="style-header">
+                            <h4>YouTube Analysis Prompt</h4>
+                            <button class="btn btn-sm btn-outline" onclick="editStylePrompt('youtube')">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                        </div>
+                        <div class="style-prompt-display" id="youtube-prompt-display">
+                            <!-- YouTube prompt will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
